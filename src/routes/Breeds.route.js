@@ -63,7 +63,7 @@ router.route('/breeds/:id')
                 }
             })
             const photos = response2.data
-            saveSearch(id)
+            saveSearch({id, name: breed.name, description: breed.description})
             res.status(200).send({breed, photos})
         }        
         catch(error) {
@@ -74,32 +74,11 @@ router.route('/breeds/:id')
 router.route('/breeds/search/popular')
     .get(async (req, res, next) => {
         const stats = getStats()
-        const sortedStats = stats.sort((a,b) => {
-            const aCount = a.searchCount
-            const bCount = b.searchCount
+        const sortedStats = stats.sort((a,b) => b.searchCount - a.searchCount)
 
-            return bCount - aCount
-        })
-
-        const popular = sortedStats.slice(0,10).map(e => e.id)
-
-        try {
-            const response = await axios({
-                method: 'get',
-                url: 'https://api.thecatapi.com/v1/breeds',
-                head: {
-                    'x-api-key': 'live_aMKjfbThaKvcUkXTY2UKUalQQIddxcV0UKhwYPdY2uLeVzOrnhDwOyLHrMmzu6Ld'
-                }
-            })
-            const breeds = response.data
-
-            const popularBreeds = breeds.filter(breed => popular.some(e=> e === breed.id))
+        const popular = sortedStats.slice(0,10)
             
-            res.status(200).send(popularBreeds)
-        }
-        catch(error) {
-            res.status(500).send({code : error.code, errorName : error.name, msg : error.message})
-        }
+        res.status(200).send(popular)
     })
 
 module.exports = router

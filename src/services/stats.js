@@ -2,26 +2,27 @@ const {LocalStorage} = require("node-localstorage")
 
 const localStorage = new LocalStorage('./scratch'); 
 
-const IEntry = (id, count) => ({
-    id : id,
-    searchCount : count
+const IEntry = (breed, searchCount) => ({
+    breed,
+    searchCount
 })
 
 exports.getStats = () => {
     return JSON.parse(localStorage.getItem('stats')) || []
 }
 
-exports.saveSearch = (id) => {
-    if (!id) return
+exports.saveSearch = (breed) => {
+    if (!breed) return
     const stats = this.getStats()
 
-    if (stats.length < 1) return localStorage.setItem('stats', JSON.stringify([{...IEntry(id, 1)}]))
-
-    const entry = stats.find(e => e.id === id)
-    if (entry === undefined) return localStorage.setItem('stats', JSON.stringify([...stats, IEntry(id,1)]))
+    const entry = stats.find(e => e.breed.id === breed.id)
+    if (entry === undefined) {
+        localStorage.setItem('stats', JSON.stringify([...stats, {...IEntry(breed, 1)}]))
+        return
+    }
     
-    const newEntry = IEntry(id, (entry.searchCount + 1))
-    const index = stats.findIndex(e => e.id === id)
+    const newEntry = IEntry(breed,  (entry.searchCount += 1))
+    const index = stats.findIndex(e => e.breed.id === breed.id)
     const newStats = [...stats]
     newStats.splice(index, 1, newEntry)
     
@@ -100,4 +101,6 @@ exports.saveSearch = (id) => {
 //     {"weight":{"imperial":"12 - 18","metric":"5 - 8"},"id":"ycho","name":"York Chocolate","temperament":"Playful, Social, Intelligent, Curious, Friendly","origin":"United States","country_codes":"US","country_code":"US","description":"York Chocolate cats are known to be true lap cats with a sweet temperament. They love to be cuddled and petted. Their curious nature makes them follow you all the time and participate in almost everything you do, even if it's related to water: unlike many other cats, York Chocolates love it.","life_span":"13 - 15","indoor":0,"lap":1,"alt_names":"York","adaptability":5,"affection_level":5,"child_friendly":4,"dog_friendly":5,"energy_level":5,"grooming":3,"health_issues":1,"intelligence":5,"shedding_level":3,"social_needs":4,"stranger_friendly":4,"vocalisation":5,"experimental":0,"hairless":0,"natural":0,"rare":0,"rex":0,"suppressed_tail":0,"short_legs":0,"wikipedia_url":"https://en.wikipedia.org/wiki/York_Chocolate","hypoallergenic":0,"reference_image_id":"0SxW2SQ_S"}
 // ]
 
-// breeds.forEach(breed => this.saveSearch(breed.id))
+// breeds.forEach(breed => this.saveSearch({id: breed.id, name: breed.name, description: breed.description}))
+
+// console.log(this.getStats().length)
