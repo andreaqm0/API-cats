@@ -62,7 +62,7 @@ router.route('/:id')
             const data = response2.data
             const images = data.map(img => img.url)
             saveSearch({id, name: breed.name, description: breed.description})
-            res.status(200).send({breed, images})
+            res.status(200).send({data: breed, images})
         }        
         catch(error) {
             res.status(500).send({code : error.code, errorName : error.name, msg : error.message})
