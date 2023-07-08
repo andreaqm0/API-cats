@@ -57,14 +57,12 @@ router.route('/:id')
 
             const response2 = await axios({
                 method: 'get',
-                url: `https://api.thecatapi.com/v1/images/search?breed_ids=${id}&limit=25`,
-                head: {
-                    'x-api-key': 'live_aMKjfbThaKvcUkXTY2UKUalQQIddxcV0UKhwYPdY2uLeVzOrnhDwOyLHrMmzu6Ld'
-                }
+                url: `https://api.thecatapi.com/v1/images/search?breed_ids=${id}&limit=25&api_key=live_aMKjfbThaKvcUkXTY2UKUalQQIddxcV0UKhwYPdY2uLeVzOrnhDwOyLHrMmzu6Ld`,
             })
-            const photos = response2.data
+            const data = response2.data
+            const images = data.map(img => img.url)
             saveSearch({id, name: breed.name, description: breed.description})
-            res.status(200).send({breed, photos})
+            res.status(200).send({breed, images})
         }        
         catch(error) {
             res.status(500).send({code : error.code, errorName : error.name, msg : error.message})
