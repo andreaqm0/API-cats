@@ -2,7 +2,7 @@ const router = require('express').Router()
 const axios = require('axios').default
 const {saveSearch, getStats} = require('../services/stats')
 
-router.route('/breeds')
+router.route('/')
     .get(async (req,res,next) => {
         try {
             const response = await axios({
@@ -21,7 +21,7 @@ router.route('/breeds')
         }
     });
 
-router.route('/breeds/search')
+router.route('/search')
     .get(async (req,res,next) => {
         try {
             const response = await axios({
@@ -40,7 +40,7 @@ router.route('/breeds/search')
         }        
     });
 
-router.route('/breeds/:id')
+router.route('/:id')
     .get(async (req,res, next) => {
         const {id} = req.params
 
@@ -71,7 +71,7 @@ router.route('/breeds/:id')
         }
     })
 
-router.route('/breeds/search/popular')
+router.route('/search/popular')
     .get(async (req, res, next) => {
         const stats = getStats()
         const sortedStats = stats.sort((a,b) => b.searchCount - a.searchCount)
